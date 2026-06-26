@@ -1,8 +1,4 @@
-import {
-  registerDecorator,
-  ValidationArguments,
-  ValidationOptions,
-} from "class-validator";
+import { ValidationArguments, ValidationOptions, registerDecorator } from "class-validator";
 
 // Validates that the decorated ISO date string is chronologically after the
 // ISO date string held in `property` on the same object.
@@ -17,9 +13,7 @@ export function IsAfter(property: string, validationOptions?: ValidationOptions)
       validator: {
         validate(value: unknown, args: ValidationArguments) {
           const [relatedPropertyName] = args.constraints;
-          const relatedValue = (args.object as Record<string, unknown>)[
-            relatedPropertyName
-          ];
+          const relatedValue = (args.object as Record<string, unknown>)[relatedPropertyName];
 
           if (typeof value !== "string" || typeof relatedValue !== "string") {
             return false;
