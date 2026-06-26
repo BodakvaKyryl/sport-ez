@@ -1,13 +1,12 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "nodenext",
     "target": "ES2021",
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "outDir": "./dist",
-    "baseUrl": "./",
-    "skipLibCheck": true
-  }
+    "skipLibCheck": true,
+  },
 }

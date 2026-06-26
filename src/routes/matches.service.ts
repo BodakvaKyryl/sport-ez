@@ -2,12 +2,15 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { desc, eq } from "drizzle-orm";
 
 import { db } from "../db/db";
-import { matches } from "../db/schema";
+import { Match, matches } from "../db/schema";
 import { getMatchStatus } from "../utils/match-status";
 import { CreateMatchDto, MATCH_STATUS, UpdateScoreDto } from "../validation/matches";
+import { MatchesGateway } from "../ws/matches.gateway";
 
 @Injectable()
 export class MatchesService {
+  constructor(private readonly gateway: MatchesGateway) {}
+
   async create(body: CreateMatchDto) {
     const status = getMatchStatus(body.startTime, body.endTime) ?? MATCH_STATUS.SCHEDULED;
 
@@ -24,6 +27,8 @@ export class MatchesService {
         status,
       })
       .returning();
+
+    this.gateway.broadcastMatchCreated(match);
 
     return match;
   }
@@ -49,6 +54,8 @@ export class MatchesService {
       .returning();
 
     if (!match) throw new NotFoundException(`Match ${id} not found.`);
+
+    this.gateway.broadcastScoreUpdated(match);
 
     return match;
   }
