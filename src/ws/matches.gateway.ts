@@ -2,12 +2,13 @@ import { OnGatewayConnection, WebSocketGateway, WebSocketServer } from "@nestjs/
 import { WebSocket, Server as WsServer } from "ws";
 
 import { allowedOrigins } from "../config";
-import { Match } from "../db/schema";
+import { Commentary, Match } from "../db/schema";
 
 type OutgoingMessage =
   | { type: "welcome" }
   | { type: "match_created"; data: Match }
-  | { type: "score_updated"; data: Match };
+  | { type: "score_updated"; data: Match }
+  | { type: "commentary_created"; data: Commentary };
 
 function verifyClient(info: { origin?: string }) {
   return !info.origin || allowedOrigins.includes(info.origin);
@@ -28,6 +29,10 @@ export class MatchesGateway implements OnGatewayConnection {
 
   broadcastScoreUpdated(match: Match) {
     this.broadcast({ type: "score_updated", data: match });
+  }
+
+  broadcastCommentary(entry: Commentary) {
+    this.broadcast({ type: "commentary_created", data: entry });
   }
 
   private broadcast(payload: OutgoingMessage) {

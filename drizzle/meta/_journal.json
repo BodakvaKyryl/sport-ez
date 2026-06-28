@@ -15,6 +15,13 @@
       "when": 1782657905739,
       "tag": "0001_cool_tiger_shark",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1782670426422,
+      "tag": "0002_real_ogun",
+      "breakpoints": true
     }
   ]
 }

@@ -47,7 +47,7 @@ afterAll(async () => {
   await client.close();
 });
 
-it("pushes welcome → match_created → score_updated over the wire", async () => {
+it("pushes welcome → match_created → score_updated → commentary_created over the wire", async () => {
   const { port } = app.getHttpServer().address();
   ws = new WebSocket(`ws://localhost:${port}/ws`);
 
@@ -65,4 +65,14 @@ it("pushes welcome → match_created → score_updated over the wire", async () 
     .send({ homeScore: 2, awayScore: 1 })
     .expect(200);
   expect(await updated).toMatchObject({ type: "score_updated", data: { homeScore: 2 } });
+
+  const commented = nextMessage();
+  await request(app.getHttpServer())
+    .post(`/matches/${post.body.data.id}/commentary`)
+    .send({ message: "GOAL!", period: "2nd half" })
+    .expect(201);
+  expect(await commented).toMatchObject({
+    type: "commentary_created",
+    data: { message: "GOAL!" },
+  });
 });
