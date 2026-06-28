@@ -1,11 +1,26 @@
 import { NestFactory } from "@nestjs/core";
 import { WsAdapter } from "@nestjs/platform-ws";
+import helmet from "helmet";
 
 import { AppModule } from "./app.module";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bodyParser: false,
+  });
+
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: { defaultSrc: ["'self'"], connectSrc: ["'self'", "wss:"] },
+      },
+    })
+  );
+
+  app.enableCors({
+    origin: (process.env.ALLOWED_ORIGINS ?? "http://localhost:3000").split(","),
+    credentials: true,
+    methods: ["GET", "POST", "PATCH", "DELETE"],
   });
 
   app.useWebSocketAdapter(new WsAdapter(app));
