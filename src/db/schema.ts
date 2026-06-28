@@ -53,6 +53,9 @@ export const commentary = pgTable(
   ]
 );
 
+// Re-export better-auth tables so drizzle-kit includes them in migrations.
+export * from "./auth-schema";
+
 export type Match = typeof matches.$inferSelect;
 export type NewMatch = typeof matches.$inferInsert;
 export type Commentary = typeof commentary.$inferSelect;

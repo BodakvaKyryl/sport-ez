@@ -8,6 +8,13 @@
       "when": 1782224741712,
       "tag": "0000_damp_scourge",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1782657905739,
+      "tag": "0001_cool_tiger_shark",
+      "breakpoints": true
     }
   ]
 }

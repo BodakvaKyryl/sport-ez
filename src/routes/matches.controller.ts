@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Param, Patch, Post, Query } from "@nestjs/common";
+import { AllowAnonymous } from "@thallesp/nestjs-better-auth";
 
 import {
   CreateMatchDto,
@@ -12,12 +13,14 @@ import { MatchesService } from "./matches.service";
 export class MatchesController {
   constructor(private readonly matchesService: MatchesService) {}
 
+  @AllowAnonymous()
   @Get()
   async findAll(@Query() query: ListMatchesQueryDto) {
     const data = await this.matchesService.findAll(query.limit);
     return { message: "Matches List", data };
   }
 
+  @AllowAnonymous()
   @Get(":id")
   async findOne(@Param() params: MatchIdParamDto) {
     const data = await this.matchesService.findOne(params.id);
