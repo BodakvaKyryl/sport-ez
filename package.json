@@ -6,8 +6,8 @@
   "scripts": {
     "format": "prettier . --write",
     "format:check": "prettier . --check",
-    "start": "ts-node src/main.ts",
-    "start:dev": "ts-node --watch src/main.ts",
+    "start": "bun src/main.ts",
+    "start:dev": "bun --watch src/main.ts",
     "build": "tsc",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
@@ -58,5 +58,8 @@
     "tsx": "^4.22.4",
     "typescript": "^6.0.3"
   },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  "trustedDependencies": [
+    "@swc/core",
+    "unrs-resolver"
+  ]
 }

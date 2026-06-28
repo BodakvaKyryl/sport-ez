@@ -3,7 +3,7 @@ import { desc, eq } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
 import { DB } from "../db/db.provider";
-import { Match, matches } from "../db/schema";
+import { matches } from "../db/schema";
 import { getMatchStatus } from "../utils/match-status";
 import { CreateMatchDto, MATCH_STATUS, UpdateScoreDto } from "../validation/matches";
 import { MatchesGateway } from "../ws/matches.gateway";
