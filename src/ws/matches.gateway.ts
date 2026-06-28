@@ -1,6 +1,7 @@
 import { OnGatewayConnection, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { WebSocket, Server as WsServer } from "ws";
 
+import { allowedOrigins } from "../config";
 import { Match } from "../db/schema";
 
 type OutgoingMessage =
@@ -8,7 +9,11 @@ type OutgoingMessage =
   | { type: "match_created"; data: Match }
   | { type: "score_updated"; data: Match };
 
-@WebSocketGateway({ path: "/ws" })
+function verifyClient(info: { origin?: string }) {
+  return !info.origin || allowedOrigins.includes(info.origin);
+}
+
+@WebSocketGateway({ path: "/ws", verifyClient })
 export class MatchesGateway implements OnGatewayConnection {
   @WebSocketServer()
   private readonly server!: WsServer;

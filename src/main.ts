@@ -3,6 +3,7 @@ import { WsAdapter } from "@nestjs/platform-ws";
 import helmet from "helmet";
 
 import { AppModule } from "./app.module";
+import { allowedOrigins } from "./config";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -18,7 +19,7 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: (process.env.ALLOWED_ORIGINS ?? "http://localhost:3000").split(","),
+    origin: allowedOrigins,
     credentials: true,
     methods: ["GET", "POST", "PATCH", "DELETE"],
   });
