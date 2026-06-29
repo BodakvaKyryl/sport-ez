@@ -22,7 +22,6 @@ let client: PGlite;
 let app: INestApplication;
 let ws: WebSocket;
 
-// Resolves with the next JSON message the socket receives.
 const nextMessage = () =>
   new Promise<any>((resolve) => ws.once("message", (d) => resolve(JSON.parse(d.toString()))));
 
@@ -65,6 +64,9 @@ it("pushes welcome → match_created → score_updated → commentary_created ov
     .send({ homeScore: 2, awayScore: 1 })
     .expect(200);
   expect(await updated).toMatchObject({ type: "score_updated", data: { homeScore: 2 } });
+
+  ws.send(JSON.stringify({ type: "subscribe", matchId: post.body.data.id }));
+  await new Promise((resolve) => setTimeout(resolve, 50));
 
   const commented = nextMessage();
   await request(app.getHttpServer())
