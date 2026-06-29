@@ -6,7 +6,7 @@ import { migrate } from "drizzle-orm/pglite/migrator";
 
 import { DB } from "../src/db/db.provider";
 import { matches } from "../src/db/schema";
-import { MatchesService } from "../src/routes/matches.service";
+import { MatchesService } from "../src/routes/matches/matches.service";
 import { MatchesGateway } from "../src/ws/matches.gateway";
 
 const gateway = { broadcastMatchCreated: jest.fn(), broadcastScoreUpdated: jest.fn() };

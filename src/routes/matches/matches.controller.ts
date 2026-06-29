@@ -6,7 +6,7 @@ import {
   ListMatchesQueryDto,
   MatchIdParamDto,
   UpdateScoreDto,
-} from "../validation/matches";
+} from "../../validation/matches";
 import { MatchesService } from "./matches.service";
 
 @Controller("matches")

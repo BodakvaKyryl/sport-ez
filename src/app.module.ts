@@ -6,8 +6,10 @@ import { AuthModule } from "@thallesp/nestjs-better-auth";
 import { AppController } from "./app.controller";
 import { auth } from "./auth";
 import { dbProvider } from "./db/db.provider";
-import { MatchesController } from "./routes/matches.controller";
-import { MatchesService } from "./routes/matches.service";
+import { CommentaryController } from "./routes/commentary/commentary.controller";
+import { CommentaryService } from "./routes/commentary/commentary.service";
+import { MatchesController } from "./routes/matches/matches.controller";
+import { MatchesService } from "./routes/matches/matches.service";
 import { MatchesGateway } from "./ws/matches.gateway";
 
 @Module({
@@ -15,11 +17,14 @@ import { MatchesGateway } from "./ws/matches.gateway";
     ConfigModule.forRoot({ isGlobal: true }),
     // Mounts /api/auth/* and registers a global AuthGuard.
     // All routes are protected unless marked @AllowAnonymous().
-    AuthModule.forRoot({ auth }),
+    // Guard is disabled under test: better-auth binds to the real DB at import,
+    // so e2e suites (which run against an in-memory PGlite) can't authenticate.
+    AuthModule.forRoot({ auth, disableGlobalAuthGuard: process.env.NODE_ENV === "test" }),
   ],
-  controllers: [AppController, MatchesController],
+  controllers: [AppController, MatchesController, CommentaryController],
   providers: [
     MatchesService,
+    CommentaryService,
     MatchesGateway,
     dbProvider,
     {
