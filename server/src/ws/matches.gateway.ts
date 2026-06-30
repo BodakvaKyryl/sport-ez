@@ -14,8 +14,10 @@ type SubscriberSocket = WebSocket & { subscriptions?: Set<number> };
 type OutgoingMessage =
   | { type: "welcome" }
   | { type: "match_created"; data: Match }
-  | { type: "score_updated"; data: Match }
-  | { type: "commentary_created"; data: Commentary };
+  | { type: "score_updated"; matchId: number; data: { homeScore: number; awayScore: number } }
+  | { type: "commentary_created"; data: Commentary }
+  | { type: "subscribed"; matchId: number }
+  | { type: "unsubscribed"; matchId: number };
 
 type IncomingMessage =
   { type: "subscribe"; matchId: number } | { type: "unsubscribe"; matchId: number };
@@ -46,7 +48,11 @@ export class MatchesGateway implements OnGatewayConnection, OnGatewayDisconnect 
   }
 
   broadcastScoreUpdated(match: Match) {
-    this.broadcastToAll({ type: "score_updated", data: match });
+    this.broadcastToAll({
+      type: "score_updated",
+      matchId: match.id,
+      data: { homeScore: match.homeScore, awayScore: match.awayScore },
+    });
   }
 
   broadcastCommentary(commentaryEntry: Commentary) {
@@ -92,8 +98,13 @@ export class MatchesGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     if (typeof msg?.matchId !== "number") return;
 
-    if (msg.type === "subscribe") this.subscribe(msg.matchId, socket);
-    else if (msg.type === "unsubscribe") this.unsubscribe(msg.matchId, socket);
+    if (msg.type === "subscribe") {
+      this.subscribe(msg.matchId, socket);
+      this.sendToSocket(socket, { type: "subscribed", matchId: msg.matchId });
+    } else if (msg.type === "unsubscribe") {
+      this.unsubscribe(msg.matchId, socket);
+      this.sendToSocket(socket, { type: "unsubscribed", matchId: msg.matchId });
+    }
   }
 
   private broadcastToMatch(matchId: number, payload: OutgoingMessage) {

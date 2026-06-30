@@ -65,8 +65,9 @@ it("pushes welcome → match_created → score_updated → commentary_created ov
     .expect(200);
   expect(await updated).toMatchObject({ type: "score_updated", data: { homeScore: 2 } });
 
+  const subscribed = nextMessage();
   ws.send(JSON.stringify({ type: "subscribe", matchId: post.body.data.id }));
-  await new Promise((resolve) => setTimeout(resolve, 50));
+  expect(await subscribed).toMatchObject({ type: "subscribed", matchId: post.body.data.id });
 
   const commented = nextMessage();
   await request(app.getHttpServer())
