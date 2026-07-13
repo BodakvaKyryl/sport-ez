@@ -1,7 +1,18 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-yellow: #ffd400;
+  --color-brand-dark: #14131f;
+  --color-brand-blue: #4d7bff;
+  --shadow-hard: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+  --shadow-hard-sm: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+}
+
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
 }
 
 body {
   margin: 0;
+  background: #fff;
 }
