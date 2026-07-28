@@ -245,6 +245,41 @@ async function createMatch(seedMatch: SeedMatch): Promise<ApiMatch> {
   return responsePayload.data;
 }
 
+async function updateMatchScore(
+  matchId: number,
+  homeScore: number,
+  awayScore: number
+): Promise<void> {
+  const response = await fetch(`${API_URL}/matches/${matchId}/score`, {
+    method: "PATCH",
+    headers: authedHeaders(),
+    body: JSON.stringify({ homeScore, awayScore }),
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to update score: ${response.status}`);
+  }
+}
+
+// Point value of an event type, or null if it doesn't score.
+function scoreDeltaFromEventType(eventType?: string): number | null {
+  switch (eventType) {
+    case "goal":
+      return 1;
+    case "basket":
+      return 2;
+    case "three":
+      return 3;
+    case "run":
+      return 1;
+    case "four":
+      return 4;
+    case "six":
+      return 6;
+    default:
+      return null;
+  }
+}
+
 async function insertCommentary(
   matchId: number,
   entry: CommentaryEntry
@@ -554,6 +589,17 @@ async function seed(): Promise<void> {
 
     const row = await insertCommentary(match.id, entry);
     console.log(`[Match ${match.id}] ${row.message}`);
+
+    const points = scoreDeltaFromEventType(entry.eventType);
+    if (points !== null) {
+      if (entry.team === match.homeTeam) {
+        target.score.home += points;
+      } else if (entry.team === match.awayTeam) {
+        target.score.away += points;
+      }
+      await updateMatchScore(match.id, target.score.home, target.score.away);
+      console.log(`[Match ${match.id}] Score: ${target.score.home}-${target.score.away}`);
+    }
 
     if (DELAY_MS > 0) {
       await new Promise((resolve) => setTimeout(resolve, DELAY_MS));
