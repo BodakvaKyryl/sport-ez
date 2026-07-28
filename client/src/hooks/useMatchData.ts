@@ -76,7 +76,7 @@ export function useMatchData(): UseMatchDataResult {
   useEffect(() => {
     return onMessage((message) => {
       if (message.type === "match_created") {
-                setMatches((prev) =>
+        setMatches((prev) =>
           prev.some((match) => match.id === message.data.id) ? prev : [...prev, message.data]
         );
         setNewMatchesCount((count) => count + 1);
